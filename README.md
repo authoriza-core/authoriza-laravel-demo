@@ -233,7 +233,7 @@ authoriza-laravel-demo/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   └── AuthController.php          # Тонкий контроллер (~100 строк)
+│   │   │   └── AuthController.php          # Тонкий контроллер
 │   │   └── Middleware/
 │   │       └── RefreshTokens.php            # Автообновление токенов
 │   ├── Providers/
