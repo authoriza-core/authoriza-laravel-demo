@@ -59,9 +59,9 @@
 
 - В главном окне Laragon нажмите кнопку **"Start All"**. Это запустит веб-сервер Apache и базу данных MySQL.
 - Laragon автоматически создаёт виртуальные хосты. Ваш проект будет доступен по адресу:
-  ```
+  
   http://authoriza-laravel-demo.test
-  ```
+  
   (если папка проекта называется `authoriza-laravel-demo`).
 
 ### 3. Создание проекта через Laragon
@@ -79,30 +79,30 @@
 
 ### 1. Клонирование репозитория
 
-```bash
+
 git clone https://github.com/authoriza-core/authoriza-laravel-demo
 cd authoriza-laravel-demo
-```
+
 
 ### 2. Установка зависимостей через Composer
 
-```bash
+
 composer install
-```
+
 
 ### 3. Создание файла `.env`
 
 Скопируйте файл `.env.example` в `.env`:
 
-```bash
+
 cp .env.example .env
-```
+
 
 ### 4. Генерация ключа приложения
 
-```bash
+
 php artisan key:generate
-```
+
 
 ---
 
@@ -128,13 +128,13 @@ php artisan key:generate
 
 Отредактируйте файл `.env` и укажите полученные данные:
 
-```env
+
 # ===== OpenID Connect (Авториза) =====
 OIDC_ISSUER_URL=https://oidc.authoriza.ru/oidc
 OIDC_CLIENT_ID=ваш_client_id
 OIDC_CLIENT_SECRET=ваш_client_secret
 OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
-```
+
 
 > ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). Если вы используете Laragon с виртуальным хостом, замените на `http://authoriza-laravel-demo.test/auth/callback`.
 
@@ -144,9 +144,9 @@ OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
 
 ### Вариант 1: Использование встроенного PHP-сервера (быстрый старт)
 
-```bash
+
 php artisan serve
-```
+
 
 По умолчанию сервер запускается на `http://127.0.0.1:8000`.
 
