@@ -669,4 +669,4 @@ authoriza-laravel-demo/
 **Кристина**  
 Проект выполнен в рамках практики по интеграции Авторизы для стека Laravel (PHP).  
 [GitHub: kristenyn](https://github.com/kristenyn)
-```
+
