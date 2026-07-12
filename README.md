@@ -59,9 +59,9 @@
 
 - В главном окне Laragon нажмите кнопку **"Start All"**. Это запустит веб-сервер Apache и базу данных MySQL.
 - Laragon автоматически создаёт виртуальные хосты. Ваш проект будет доступен по адресу:
-  
+  ```
   http://authoriza-laravel-demo.test
-  
+  ```
   (если папка проекта называется `authoriza-laravel-demo`).
 
 ### 3. Создание проекта через Laragon
@@ -79,30 +79,30 @@
 
 ### 1. Клонирование репозитория
 
-
+```bash
 git clone https://github.com/authoriza-core/authoriza-laravel-demo
 cd authoriza-laravel-demo
-
+```
 
 ### 2. Установка зависимостей через Composer
 
-
+```bash
 composer install
-
+```
 
 ### 3. Создание файла `.env`
 
 Скопируйте файл `.env.example` в `.env`:
 
-
+```bash
 cp .env.example .env
-
+```
 
 ### 4. Генерация ключа приложения
 
-
+```bash
 php artisan key:generate
-
+```
 
 ---
 
@@ -128,13 +128,13 @@ php artisan key:generate
 
 Отредактируйте файл `.env` и укажите полученные данные:
 
-
+```env
 # ===== OpenID Connect (Авториза) =====
 OIDC_ISSUER_URL=https://oidc.authoriza.ru/oidc
 OIDC_CLIENT_ID=ваш_client_id
 OIDC_CLIENT_SECRET=ваш_client_secret
 OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
-
+```
 
 > ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). Если вы используете Laragon с виртуальным хостом, замените на `http://authoriza-laravel-demo.test/auth/callback`.
 
@@ -144,9 +144,9 @@ OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
 
 ### Вариант 1: Использование встроенного PHP-сервера (быстрый старт)
 
-
+```bash
 php artisan serve
-
+```
 
 По умолчанию сервер запускается на `http://127.0.0.1:8000`.
 
@@ -227,13 +227,13 @@ php artisan serve
 
 ## 📁 Структура проекта
 
-
+```
 authoriza-laravel-demo/
 │
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   └── AuthController.php          # Тонкий контроллер
+│   │   │   └── AuthController.php          # Тонкий контроллер (~100 строк)
 │   │   └── Middleware/
 │   │       └── RefreshTokens.php            # Автообновление токенов
 │   ├── Providers/
@@ -263,7 +263,7 @@ authoriza-laravel-demo/
 ├── .env.example                             # Шаблон конфигурации
 ├── .gitignore                               # Исключения для Git
 └── README.md                                # Документация проекта
-
+```
 
 ---
 
@@ -271,7 +271,7 @@ authoriza-laravel-demo/
 
 | Файл | Назначение | Что происходит |
 |------|------------|----------------|
-| **`AuthController.php`** | Контроллер аутентификации | Тонкий контроллер. Перенаправляет на Авторизу, обрабатывает callback, вызывает сервисы для обмена токенов, обновления и выхода. |
+| **`AuthController.php`** | Контроллер аутентификации | Тонкий контроллер (~100 строк). Перенаправляет на Авторизу, обрабатывает callback, вызывает сервисы для обмена токенов, обновления и выхода. |
 | **`RefreshTokens.php`** | Middleware для автообновления | Проверяет при каждом запросе, сколько осталось до истечения Access Token. Если ≤ 5 минут — обновляет токен через Refresh Token. |
 | **`OidcService.php`** | Главный OIDC-сервис | Объединяет все подсервисы. Содержит методы для генерации PKCE, обработки callback, обновления токенов, проверки аутентификации. |
 | **`PkceGenerator.php`** | Генератор PKCE | Генерирует `code_verifier` и `code_challenge` для Authorization Code Flow. |
@@ -348,21 +348,21 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Проверьте файл `.env`:
-   
+   ```env
    OIDC_CLIENT_ID=ваш_реальный_client_id
    OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
-   
+   ```
 2. Войдите в интерфейс Авторизы → настройки приложения → скопируйте **точные** значения Client ID и Redirect URI.
 3. Убедитесь, что `Redirect URI` в Авторизе и `OIDC_REDIRECT_URI` в `.env` совпадают **полностью** (включая порт и путь).
 4. Проверьте `config/services.php`:
-   
+   ```php
    'base_url' => env('OIDC_ISSUER_URL', 'https://oidc.authoriza.ru/oidc'),
-   
+   ```
 5. Очистите кэш конфигурации:
-   
+   ```bash
    php artisan config:clear
    php artisan cache:clear
-   
+   ```
 6. Перезапустите сервер и попробуйте войти снова.
 
 ---
@@ -379,19 +379,19 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Убедитесь, что `code_verifier` сохраняется в сессию в `AuthController::redirectToProvider()`:
-   
+   ```php
    session(['code_verifier' => $pkce['verifier']]);
-   
+   ```
 2. Проверьте, что в `AuthController::handleCallback()` `code_verifier` читается из сессии:
-   
+   ```php
    $verifier = session('code_verifier');
    if (!$verifier) return $this->error('Ошибка PKCE');
-   
+   ```
 3. Убедитесь, что PKCE реализован корректно в `PkceGenerator`:
-   
+   ```php
    $verifier = $this->pkce->generateCodeVerifier();
    $challenge = $this->pkce->generateCodeChallenge($verifier);
-   
+   ```
 4. Очистите сессию и попробуйте войти заново (выйдите из системы и зайдите снова).
 5. Проверьте, что сессия сохраняется между запросами (не отключается).
 
@@ -409,19 +409,19 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Убедитесь, что в `AuthController::redirectToProvider()` есть scope `openid`:
-   
+   ```php
    ->scopes(['openid', 'profile', 'email', 'offline_access'])
-   
+   ```
 2. Нажмите кнопку **«Обновить токены»** — после этого ID Token должен появиться.
 3. Проверьте логи, чтобы убедиться, что сервер возвращает `id_token`:
-   
+   ```bash
    tail -f storage/logs/laravel.log
-   
+   ```
    Ищите запись `Ручной ответ от Token Endpoint`.
 4. Если ID Token не появляется даже после обновления, проверьте `TokenManager::exchangeCode()` — возможно, сервер не включает `id_token` в ответ.
-   
+   ```php
    $idToken = $data['id_token'] ?? null;
-   
+   ```
 
 ---
 
@@ -437,11 +437,11 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Проверьте логи:
-   
+   ```bash
    tail -n 50 storage/logs/laravel.log
-   
+   ```
 2. Убедитесь, что все сервисы зарегистрированы в `AppServiceProvider`:
-   
+   ```php
    $this->app->singleton(OidcService::class, function ($app) {
        return new OidcService(
            new PkceGenerator(),
@@ -450,7 +450,7 @@ authoriza-laravel-demo/
            new JwtDecoder()
        );
    });
-   
+   ```
 3. Проверьте `config/services.php` — должен быть заполнен `base_url`.
 
 ---
@@ -471,19 +471,19 @@ authoriza-laravel-demo/
 
 1. Откройте консоль разработчика (F12) и проверьте наличие ошибок.
 2. Проверьте маршрут:
-   
+   ```bash
    php artisan route:list | grep auto-refresh
-   
+   ```
 3. Проверьте логи:
-   
+   ```bash
    tail -f storage/logs/laravel.log
-   
+   ```
    Ищите записи: `RefreshTokens check`, `Обновление токена запущено`, `Токены обновлены успешно`.
 4. Убедитесь, что Refresh Token существует в сессии. Проверьте в `AuthController::autoRefresh()`:
-   
+   ```php
    $rt = session('refresh_token');
    if (!$rt) return response()->json(['error'=>'Нет Refresh Token'],401);
-   
+   ```
 5. Если Refresh Token истек, пользователь будет перенаправлен на `/auth/login`. Это нормальное поведение.
 
 ---
@@ -500,10 +500,10 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Это нормальное поведение — если Refresh Token истек, сессия автоматически очищается:
-   
+   ```php
    session()->flush();
    return response()->json(['error'=>'Сессия истекла'],401);
-   
+   ```
 2. Пользователь должен войти заново через `/auth/login`.
 3. Если ошибка появляется слишком часто, проверьте время жизни Refresh Token (обычно 24 часа) в `SessionManager::storeTokens()`.
 
@@ -538,17 +538,17 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Найти процесс, использующий порт 8000:
-   
+   ```bash
    netstat -ano | findstr :8000
-   
+   ```
 2. Завершить процесс (PID указан в выводе):
-   
+   ```bash
    taskkill /PID <номер_процесса> /F
-   
+   ```
 3. Или запустить сервер на другом порту:
-   
+   ```bash
    php artisan serve --port=8080
-   
+   ```
 4. После изменения порта обновите `OIDC_REDIRECT_URI` в `.env` и в настройках Авторизы.
 
 ---
@@ -566,17 +566,17 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Обновите автозагрузку Composer:
-   
+   ```bash
    composer dump-autoload
-   
+   ```
 2. Очистите кэш Laravel:
-   
+   ```bash
    php artisan config:clear
    php artisan cache:clear
    php artisan view:clear
    php artisan route:clear
    php artisan optimize:clear
-   
+   ```
 3. Перезапустите сервер.
 
 ---
@@ -609,18 +609,18 @@ authoriza-laravel-demo/
 **Решение:**
 
 1. Проверьте пространство имён:
-   
+   ```php
    namespace App\Services\Oidc;
-   
+   ```
 2. Проверьте, что файл лежит по правильному пути:
-   
+   ```
    app/Services/Oidc/ИмяКласса.php
-   
+   ```
 3. Выполните:
-   
+   ```bash
    composer dump-autoload
    php artisan config:clear
-   
+   ```
 
 ---
 
@@ -629,29 +629,29 @@ authoriza-laravel-demo/
 Если проблема не описана выше:
 
 1. Проверьте логи:
-   
+   ```bash
    tail -n 100 storage/logs/laravel.log
-   
+   ```
 2. Проверьте маршруты:
-   
+   ```bash
    php artisan route:list
-   
+   ```
 3. Проверьте конфигурацию:
-   
+   ```bash
    php artisan config:show services.oidc
-   
+   ```
 4. Проверьте, что `.env` содержит все необходимые переменные:
-   
+   ```bash
    cat .env | grep OIDC
-   
+   ```
 5. Проверьте, что сессия работает:
-   
+   ```bash
    php artisan tinker
-   
-   
+   ```
+   ```php
    session(['test' => 'ok']);
    session('test');
-   
+   ```
 
 ---
 
@@ -669,4 +669,3 @@ authoriza-laravel-demo/
 **Кристина**  
 Проект выполнен в рамках практики по интеграции Авторизы для стека Laravel (PHP).  
 [GitHub: kristenyn](https://github.com/kristenyn)
-
