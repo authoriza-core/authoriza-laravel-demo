@@ -136,7 +136,7 @@ OIDC_CLIENT_SECRET=ваш_client_secret
 OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
 ```
 
-> ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). Если вы используете Laragon с виртуальным хостом, замените на `http://authoriza-laravel-demo.test/auth/callback`.
+> ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). 
 
 ---
 
