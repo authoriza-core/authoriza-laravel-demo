@@ -657,7 +657,7 @@ authoriza-laravel-demo/
 
 ## 📝 Полезные ссылки
 
-- [Документация Авторизы](https://a-kalinin-authoriza-frontend-stand-a5dc.twc1.net/docs/)
+- [Основной сайт Авторизы](https://authoriza.ru/)
 - [Laravel Socialite Documentation](https://laravel.com/docs/socialite)
 - [Laravel OIDC Socialite Provider](https://github.com/kovah/laravel-socialite-oidc)
 - [Laragon Official Site](https://laragon.org)
