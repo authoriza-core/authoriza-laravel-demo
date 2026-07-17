@@ -1,3 +1,4 @@
+```markdown
 # authoriza-laravel-demo
 
 **Демонстрационный проект интеграции Авторизы для Laravel (PHP)**
@@ -17,6 +18,95 @@
 - Сохранение и восстановление сессии.
 - Ручное и автоматическое обновление токенов.
 - Выход из приложения с очисткой сессии.
+
+---
+
+## 🚀 Быстрый старт (план действий для разработчика)
+
+Этот краткий план поможет быстро развернуть проект и запустить его локально.
+
+### 1. Клонирование репозитория
+```bash
+git clone -b develop https://github.com/authoriza-core/authoriza-laravel-demo.git
+cd authoriza-laravel-demo
+```
+
+### 2. Установка зависимостей
+```bash
+composer install
+```
+
+### 3. Создание файла окружения
+```bash
+cp .env.example .env   # Linux / Mac
+copy .env.example .env # Windows (cmd)
+```
+Или в PowerShell:
+```powershell
+Copy-Item .env.example .env
+```
+
+### 4. Настройка базы данных (SQLite по умолчанию)
+- Создайте пустой файл БД:
+  ```bash
+  touch database/database.sqlite   # Linux / Mac
+  ```
+  Для Windows (PowerShell):
+  ```powershell
+  New-Item -ItemType File -Path database\database.sqlite -Force
+  ```
+- Убедитесь, что в `.env` указано:
+  ```
+  DB_CONNECTION=sqlite
+  DB_DATABASE=database/database.sqlite
+  ```
+  (Можно не указывать `DB_DATABASE`, тогда Laravel использует путь по умолчанию.)
+
+### 5. Создание директорий для кэша
+```bash
+mkdir -p storage/framework/{cache,sessions,views}   # Linux / Mac
+```
+Для Windows (PowerShell):
+```powershell
+New-Item -ItemType Directory -Path storage\framework\cache -Force
+New-Item -ItemType Directory -Path storage\framework\sessions -Force
+New-Item -ItemType Directory -Path storage\framework\views -Force
+```
+
+### 6. Генерация ключа приложения
+```bash
+php artisan key:generate
+```
+
+### 7. Выполнение миграций (создание таблиц)
+```bash
+php artisan migrate
+```
+
+### 8. Настройка OIDC (Авториза)
+- Зарегистрируйте приложение в Авторизе (тип **Confidential: Web Application**, Redirect URI: `http://Ваш_Redirect_URI/auth/callback`).
+- Получите **Client ID** и **Client Secret**.
+- Заполните `.env`:
+  ```
+  OIDC_ISSUER_URL=https://authoriza.ru
+  OIDC_CLIENT_ID=ваш_client_id
+  OIDC_CLIENT_SECRET=ваш_client_secret
+  OIDC_REDIRECT_URI=http://Ваш_Redirect_URI/auth/callback
+  ```
+
+### 9. Запуск сервера
+```bash
+php artisan serve
+```
+
+### 10. Проверка работы
+- Откройте `http://Ваш_Redirect_URI/auth/login`.
+- Войдите через Авторизу.
+- После успешного входа вы попадёте на страницу `/auth/tokens` с отображением токенов.
+
+---
+
+> **Если возникли ошибки**, обратитесь к разделу **«🐛 Возможные проблемы и решения»** в конце документа.
 
 ---
 
@@ -42,123 +132,6 @@
 - **Composer** — менеджер зависимостей для PHP.
 - **Git** (опционально, для клонирования репозитория).
 - **Laragon** (рекомендуется для Windows) или любой другой веб-сервер (Apache/Nginx).
-
----
-
-## 🖥️ Установка локального сервера (Laragon)
-
-**Laragon** — это легкий и быстрый локальный веб-сервер для Windows, который включает PHP, Apache/nginx и MySQL. Он идеально подходит для разработки на Laravel.
-
-### 1. Скачайте и установите Laragon
-
-- Перейдите на официальный сайт [laragon.org](https://laragon.org) и скачайте последнюю версию (Full-version).
-- Запустите установщик и следуйте инструкциям (рекомендуется оставить путь по умолчанию `C:\laragon`).
-- После установки запустите Laragon. В системном трее появится его значок.
-
-### 2. Настройка и запуск
-
-- В главном окне Laragon нажмите кнопку **"Start All"**. Это запустит веб-сервер Apache и базу данных MySQL.
-- Laragon автоматически создаёт виртуальные хосты. Ваш проект будет доступен по адресу:
-  ```
-  http://authoriza-laravel-demo.test
-  ```
-  (если папка проекта называется `authoriza-laravel-demo`).
-
-### 3. Создание проекта через Laragon
-
-- Кликните правой кнопкой мыши по иконке Laragon в трее → **"Quick app"** → **"Laravel"**.
-- Введите имя проекта (например, `authoriza-laravel-demo`). Laragon автоматически создаст проект в `C:\laragon\www\` и настроит виртуальный хост.
-
-### 4. Альтернатива: использование встроенного PHP-сервера
-
-Если вы не хотите устанавливать Laragon, можно использовать встроенный PHP-сервер (см. раздел **"🚀 Запуск проекта"**).
-
----
-
-## 📦 Установка зависимостей
-
-### 1. Клонирование репозитория
-
-```bash
-git clone https://github.com/authoriza-core/authoriza-laravel-demo
-cd authoriza-laravel-demo
-```
-
-### 2. Установка зависимостей через Composer
-
-```bash
-composer install
-```
-
-### 3. Создание файла `.env`
-
-Скопируйте файл `.env.example` в `.env`:
-
-```bash
-cp .env.example .env
-```
-
-### 4. Генерация ключа приложения
-
-```bash
-php artisan key:generate
-```
-
----
-
-## 🔐 Настройка приложения в Авторизе
-
-Для работы приложения необходимо зарегистрировать его в Авторизе и получить **Client ID** и **Client Secret**.
-
-### 1. Войдите в интерфейс Авторизы
-### 2. Создайте новое приложение
-
-| Параметр | Значение |
-|----------|----------|
-| **Имя** | `Laravel Demo` (любое) |
-| **Тип** | `Confidential: Web Application` |
-| **Redirect URI** | `http://127.0.0.1:8000/auth/callback` (для встроенного сервера)<br>или `http://authoriza-laravel-demo.test/auth/callback` (для Laragon) |
-| **Состояние** | `ВКЛ` |
-
-### 3. Сохраните приложение и скопируйте **Client ID** и **Client Secret**
-
----
-
-## ⚙️ Настройка конфигурации (.env)
-
-Отредактируйте файл `.env` и укажите полученные данные:
-
-```env
-# ===== OpenID Connect (Авториза) =====
-OIDC_ISSUER_URL=https://oidc.authoriza.ru/oidc
-OIDC_CLIENT_ID=ваш_client_id
-OIDC_CLIENT_SECRET=ваш_client_secret
-OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
-```
-
-
-> ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). 
-
-
----
-
-## 🚀 Запуск проекта
-
-### Вариант 1: Использование встроенного PHP-сервера (быстрый старт)
-
-```bash
-php artisan serve
-```
-
-По умолчанию сервер запускается на `http://127.0.0.1:8000`.
-
-Откройте в браузере: `http://127.0.0.1:8000`
-
-### Вариант 2: Использование Laragon (рекомендуется для Windows)
-
-1. Убедитесь, что Laragon запущен и Apache/nginx работает.
-2. Скопируйте проект в папку `C:\laragon\www\authoriza-laravel-demo` (если вы не создавали его через Quick app).
-3. Откройте в браузере: `http://authoriza-laravel-demo.test`
 
 ---
 
@@ -269,68 +242,15 @@ authoriza-laravel-demo/
 
 ---
 
-## 📂 Описание ключевых файлов
+## 📂 Ключевые файлы
 
-| Файл | Назначение | Что происходит |
-|------|------------|----------------|
-| **`AuthController.php`** | Контроллер аутентификации | Тонкий контроллер (~100 строк). Перенаправляет на Авторизу, обрабатывает callback, вызывает сервисы для обмена токенов, обновления и выхода. |
-| **`RefreshTokens.php`** | Middleware для автообновления | Проверяет при каждом запросе, сколько осталось до истечения Access Token. Если ≤ 5 минут — обновляет токен через Refresh Token. |
-| **`OidcService.php`** | Главный OIDC-сервис | Объединяет все подсервисы. Содержит методы для генерации PKCE, обработки callback, обновления токенов, проверки аутентификации. |
-| **`PkceGenerator.php`** | Генератор PKCE | Генерирует `code_verifier` и `code_challenge` для Authorization Code Flow. |
-| **`TokenManager.php`** | Управление токенами | Отправляет HTTP-запросы к Token Endpoint для обмена кода на токены и обновления токенов. |
-| **`SessionManager.php`** | Управление сессией | Сохраняет токены в сессию, очищает сессию, проверяет наличие Access Token. |
-| **`JwtDecoder.php`** | Декодер JWT | Декодирует JWT-токены и возвращает Payload в виде массива. |
-| **`AppServiceProvider.php`** | Провайдер приложения | Регистрирует OIDC-провайдер для Laravel Socialite через `Event::listen()`. |
-| **`OidcDiscoveryService.php`** | Сервис Discovery | Получает конфигурацию OIDC-сервера через `.well-known/openid-configuration`. |
-| **`services.php`** | Конфигурация сервисов | Хранит настройки OIDC: `base_url`, `client_id`, `client_secret`, `redirect`, `scopes`. |
-| **`web.php`** | Маршруты приложения | Определяет все маршруты: `/auth/login`, `/auth/callback`, `/auth/tokens`, `/auth/refresh`, `/auth/logout`, `/auth/auto-refresh`. |
-| **`tokens.blade.php`** | Шаблон страницы токенов | Отображает токены, Payload, время истечения. Содержит JavaScript-таймер для автообновления. |
-| **`.env`** | Переменные окружения | Хранит чувствительные данные: `OIDC_ISSUER_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_REDIRECT_URI`. |
-
----
-
-## 🔧 Используемые команды
-
-### Создание и установка проекта
-
-| Команда | Назначение |
-|---------|------------|
-| `composer create-project laravel/laravel authoriza-laravel-demo` | Создание нового Laravel-проекта |
-| `composer install` | Установка зависимостей |
-| `php artisan key:generate` | Генерация ключа приложения |
-
-### Установка пакетов
-
-| Команда | Назначение |
-|---------|------------|
-| `composer require kovah/laravel-socialite-oidc` | Установка OIDC-драйвера для Socialite |
-| `composer dump-autoload` | Обновление автозагрузчика Composer (после добавления/удаления классов) |
-
-### Создание файлов
-
-| Команда | Назначение |
-|---------|------------|
-| `php artisan make:controller AuthController` | Создание контроллера |
-| `php artisan make:middleware RefreshTokens` | Создание middleware |
-| `php artisan make:view tokens` | Создание Blade-шаблона |
-
-### Очистка кэша
-
-| Команда | Назначение |
-|---------|------------|
-| `php artisan config:clear` | Очистка кэша конфигурации |
-| `php artisan cache:clear` | Очистка кэша приложения |
-| `php artisan view:clear` | Очистка кэша шаблонов |
-| `php artisan optimize:clear` | Полная очистка всех кэшей |
-
-### Запуск и отладка
-
-| Команда | Назначение |
-|---------|------------|
-| `php artisan serve` | Запуск сервера на `http://127.0.0.1:8000` |
-| `php artisan tinker` | Интерактивная консоль для отладки |
-| `php artisan route:list` | Просмотр всех маршрутов |
-| `tail -f storage/logs/laravel.log` | Просмотр логов в реальном времени |
+| Файл | Назначение |
+|------|------------|
+| **`AuthController.php`** | Тонкий контроллер (~100 строк). Перенаправляет на Авторизу, обрабатывает callback, вызывает сервисы для обмена токенов, обновления и выхода. |
+| **`RefreshTokens.php`** | Middleware для автообновления Access Token при истечении (≤ 5 минут). |
+| **`OidcService.php`** | Главный сервис, объединяет PKCE, управление токенами и сессией. |
+| **`TokenManager.php`** | HTTP-запросы к Token Endpoint (обмен кода, обновление через Refresh Token). |
+| **`PkceGenerator.php`** | Генерация `code_verifier` и `code_challenge` для PKCE. |
 
 ---
 
@@ -352,7 +272,7 @@ authoriza-laravel-demo/
 1. Проверьте файл `.env`:
    ```env
    OIDC_CLIENT_ID=ваш_реальный_client_id
-   OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
+   OIDC_REDIRECT_URI=http://Ваш_Redirect_URI/auth/callback
    ```
 2. Войдите в интерфейс Авторизы → настройки приложения → скопируйте **точные** значения Client ID и Redirect URI.
 3. Убедитесь, что `Redirect URI` в Авторизе и `OIDC_REDIRECT_URI` в `.env` совпадают **полностью** (включая порт и путь).
@@ -671,4 +591,3 @@ authoriza-laravel-demo/
 **Кристина**  
 Проект выполнен в рамках практики по интеграции Авторизы для стека Laravel (PHP).  
 [GitHub: kristenyn](https://github.com/kristenyn)
-
