@@ -136,11 +136,9 @@ OIDC_CLIENT_SECRET=ваш_client_secret
 OIDC_REDIRECT_URI=http://127.0.0.1:8000/auth/callback
 ```
 
-<<<<<<< HEAD
+
 > ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). 
-=======
-> ⚠️ **Важно:** `OIDC_REDIRECT_URI` должен точно совпадать с тем, что указан в настройках приложения Авторизы (включая порт и путь). Если вы используете Laragon с виртуальным хостом, замените на `http://authoriza-laravel-demo.test/auth/callback`.
->>>>>>> 21fdcd4 (Попытка номер 2!)
+
 
 ---
 
@@ -673,4 +671,4 @@ authoriza-laravel-demo/
 **Кристина**  
 Проект выполнен в рамках практики по интеграции Авторизы для стека Laravel (PHP).  
 [GitHub: kristenyn](https://github.com/kristenyn)
-```
+
