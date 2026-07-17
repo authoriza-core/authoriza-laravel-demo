@@ -1,4 +1,3 @@
-```markdown
 # authoriza-laravel-demo
 
 **Демонстрационный проект интеграции Авторизы для Laravel (PHP)**
